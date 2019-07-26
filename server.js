@@ -16,7 +16,7 @@ const Name = new GraphQLObjectType({
     id: {
       type: GraphQLID,
       resolve(self) {
-        return `${self.first} ${self.last}`;
+        return `${self.first}-${self.last}`;
       }
     },
     first: {
@@ -46,7 +46,7 @@ const User = new GraphQLObjectType({
   }
 });
 
-var user = {
+const user = {
   id: "abc123",
   name: null
 };

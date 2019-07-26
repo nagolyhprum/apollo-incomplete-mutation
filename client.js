@@ -7,18 +7,35 @@ import { HttpLink } from "apollo-link-http";
 import { ApolloProvider, Query, Mutation } from "react-apollo";
 import gql from "graphql-tag";
 
-const GET_USER = gql`
-  query getUser {
-    user {
-      id
-      name {
-        id
-        first
-        last
-        full
-      }
-    }
+import {
+  getUserFullName,
+  getUserFirstName,
+  getUserLastName,
+  getUserId
+} from "./fragments";
+
+const getFullUser = gql`
+  query getFullUser {
+    ...getUserId
+    ...getUserFirstName
+    ...getUserLastName
+    ...getUserFullName
   }
+  ${getUserId}
+  ${getUserFirstName}
+  ${getUserLastName}
+  ${getUserFullName}
+`;
+
+const getPartialUser = gql`
+  query getPartialUser {
+    ...getUserId
+    ...getUserFirstName
+    ...getUserLastName
+  }
+  ${getUserId}
+  ${getUserFirstName}
+  ${getUserLastName}
 `;
 
 const SET_USER = gql`
@@ -28,8 +45,7 @@ const SET_USER = gql`
       name {
         id
         first
-        #last
-        #full
+        last
       }
     }
   }
@@ -45,39 +61,43 @@ const client = new ApolloClient({
   link
 });
 
-ReactDOM.render(
-  <ApolloProvider client={client}>
-    <Query query={GET_USER}>
+const ShowUser = ({ query, children }) => {
+  return (
+    <Query query={query}>
       {({ data, loading, error }) => {
         if (loading) return <div>LOADING</div>;
         if (error) return <div>ERROR</div>;
 
-        const { name } = data.user;
-
         return (
-          <Mutation mutation={SET_USER}>
-            {setUser => (
-              <div>
-                <button
-                  onClick={() => {
-                    setUser({
-                      variables: {
-                        firstname: "Jane",
-                        lastname: "Deer"
-                      }
-                    });
-                  }}
-                >
-                  Mutate
-                </button>
-                Hello {name && name.first} {name && name.last}:
-                {name && name.full}
-              </div>
-            )}
-          </Mutation>
+          <>
+            <pre>{JSON.stringify(data, null, "\t")}</pre>
+          </>
         );
       }}
     </Query>
+  );
+};
+
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <ShowUser query={getFullUser} />
+    <ShowUser query={getPartialUser} />
+    <Mutation mutation={SET_USER}>
+      {setUser => (
+        <button
+          onClick={() => {
+            setUser({
+              variables: {
+                firstname: "Jane",
+                lastname: "Doe"
+              }
+            });
+          }}
+        >
+          Mutate
+        </button>
+      )}
+    </Mutation>
   </ApolloProvider>,
   document.getElementById("react")
 );
