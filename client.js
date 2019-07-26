@@ -43,7 +43,6 @@ const SET_USER = gql`
     user(firstname: $firstname, lastname: $lastname) {
       id
       name {
-        id
         first
         last
       }
