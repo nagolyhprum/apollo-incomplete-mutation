@@ -81,7 +81,7 @@ ReactDOM.render(
   <ApolloProvider client={client}>
     <ShowUser query={getFullUser} />
     <ShowUser query={getPartialUser} />
-    <Mutation mutation={SET_USER}>
+    <Mutation mutation={SET_USER} refetchQueries={() => ["getFullUser"]}>
       {setUser => (
         <button
           onClick={() => {
