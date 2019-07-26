@@ -1,5 +1,15 @@
 import gql from "graphql-tag";
 
+export const getNameId = gql`
+  fragment getNameId on RootQueryType {
+    user {
+      name {
+        id
+      }
+    }
+  }
+`;
+
 export const getUserId = gql`
   fragment getUserId on RootQueryType {
     user {

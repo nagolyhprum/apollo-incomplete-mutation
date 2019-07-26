@@ -11,16 +11,19 @@ import {
   getUserFullName,
   getUserFirstName,
   getUserLastName,
-  getUserId
+  getUserId,
+  getNameId
 } from "./fragments";
 
 const getFullUser = gql`
   query getFullUser {
+    ...getNameId
     ...getUserId
     ...getUserFirstName
     ...getUserLastName
     ...getUserFullName
   }
+  ${getNameId}
   ${getUserId}
   ${getUserFirstName}
   ${getUserLastName}
@@ -29,10 +32,12 @@ const getFullUser = gql`
 
 const getPartialUser = gql`
   query getPartialUser {
+    ...getNameId
     ...getUserId
     ...getUserFirstName
     ...getUserLastName
   }
+  ${getNameId}
   ${getUserId}
   ${getUserFirstName}
   ${getUserLastName}
@@ -43,6 +48,7 @@ const SET_USER = gql`
     user(firstname: $firstname, lastname: $lastname) {
       id
       name {
+        id
         first
         last
       }
